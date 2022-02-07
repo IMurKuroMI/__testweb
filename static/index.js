@@ -10,6 +10,7 @@ var body, blockSize, GameLayer = [],
     GameLayerBG, touchArea = [],
     GameTimeLayer;
 var transform, transitionDuration;
+var readyBtn;
 
 function init() {
     showWelcomeLayer();
@@ -250,10 +251,47 @@ function gameLayerMoveNextRow() {
     }
 }
 
+function gameKeyEvent(e) {
+    if (!readyBtn) {
+        return false;
+    }
+    var keyD = 68,
+        keyF = 70,
+        keyJ = 74,
+        keyK = 75;
+    var ans = -1;
+    switch (e.keyCode) {
+        case keyD:
+            ans = 0;
+            break;
+        case keyF:
+            ans = 1;
+            break;
+        case keyJ:
+            ans = 2;
+            break;
+        case keyK:
+            ans = 3;
+            break;
+        default:
+            return false;
+            break;
+    }
+    var o = {
+        clientY: (touchArea[0] + touchArea[1]) / 2,
+        clientX: 128,
+        target: { notEmpty: false },
+        keyCell: ans
+    }
+    gameTapEvent(o);
+    return true;
+}
+
 function gameTapEvent(e) {
     if (_gameOver) {
         return false;
     }
+    var key = e.keyCell;
     var tar = e.target;
     var y = e.clientY || e.targetTouches[0].clientY,
         x = (e.clientX || e.targetTouches[0].clientX) - body.offsetLeft,
@@ -261,7 +299,7 @@ function gameTapEvent(e) {
     if (y > touchArea[0] || y < touchArea[1]) {
         return false;
     }
-    if ((p.id == tar.id && tar.notEmpty) || (p.cell == 0 && x < blockSize) || (p.cell == 1 && x > blockSize && x < 2 *
+    if ((p.cell === key) || (p.id == tar.id && tar.notEmpty) || (p.cell == 0 && x < blockSize) || (p.cell == 1 && x > blockSize && x < 2 *
             blockSize) || (p.cell == 2 && x > 2 * blockSize && x < 3 * blockSize) || (p.cell == 3 && x > 3 * blockSize)) {
         if (!_gameStart) {
             gameStart();
@@ -301,6 +339,7 @@ function createGameLayer() {
 function closeWelcomeLayer() {
     var l = document.getElementById('welcome');
     l.style.display = 'none';
+    readyBtn = true
 }
 
 function showWelcomeLayer() {
@@ -428,5 +467,7 @@ console.log("不修改，好嘛？乱传又有什么用呢？(ˉ▽ˉ；)...")
 document.onkeydown = function(e) {
     if (e.keyCode == 123) {
         return false
+    } else {
+        gameKeyEvent(e)
     }
 };
