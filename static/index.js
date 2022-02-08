@@ -281,7 +281,8 @@ function gameKeyEvent(e) {
         clientY: (touchArea[0] + touchArea[1]) / 2,
         clientX: 128,
         target: { notEmpty: false },
-        keyCell: ans
+        keyCell: ans,
+        isKey: true
     }
     gameTapEvent(o);
     return true;
@@ -299,8 +300,8 @@ function gameTapEvent(e) {
     if (y > touchArea[0] || y < touchArea[1]) {
         return false;
     }
-    if ((p.cell === key) || (p.id == tar.id && tar.notEmpty) || (p.cell == 0 && x < blockSize) || (p.cell == 1 && x > blockSize && x < 2 *
-            blockSize) || (p.cell == 2 && x > 2 * blockSize && x < 3 * blockSize) || (p.cell == 3 && x > 3 * blockSize)) {
+    if ((p.cell === key) || (p.id == tar.id && tar.notEmpty) || e.isKey != true && ((p.cell == 0 && x < blockSize) || (p.cell == 1 && x > blockSize && x < 2 *
+            blockSize) || (p.cell == 2 && x > 2 * blockSize && x < 3 * blockSize) || (p.cell == 3 && x > 3 * blockSize))) {
         if (!_gameStart) {
             gameStart();
         }
